@@ -43,8 +43,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/Backend_cart
+            cd /home/ubuntu/weatherapp/WeatherApplication
             git pull
-            export KUBECONFIG=/home/ubuntu/kubeconfig
             kubectl apply -f k8s/backend-deployment.yaml
             kubectl apply -f k8s/backend-service.yaml
