@@ -14,7 +14,7 @@ spec:
         app: backend
     spec:
       containers:
-        - name: backend
+        - name: backend-container
           image: noufawal0311/dotnet-backend:latest
           imagePullPolicy: Always
           ports:
