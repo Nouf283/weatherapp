@@ -18,24 +18,30 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3️ Login to Docker Hub
+      # 3️⃣ Login to Docker Hub
       - name: Docker login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # 4 Build & push Docker image
+      # 4️⃣ Build Docker image
       - name: Build Docker image
         working-directory: WeatherApplication
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} .
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} \
+            .
 
+      # 5️⃣ Push Docker image
       - name: Push Docker image
+        working-directory: WeatherApplication
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }}
 
-      # 5️ Deploy to Kubernetes via Bastion
+      # 6️⃣ Deploy to Kubernetes via Bastion
       - name: Deploy backend to Kubernetes
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -45,5 +51,19 @@ jobs:
           script: |
             cd /home/ubuntu/weatherapp/WeatherApplication
             git pull
+
+            # Set namespace context
+            kubectl create namespace backend --dry-run=client -o yaml | kubectl apply -f -
+
+            # Update deployment image to the latest SHA tag
+            kubectl set image deployment/backend-deployment \
+              backend-container=${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} -n backend
+
+            # Apply Kubernetes manifests
             kubectl apply -f k8s/backend-deployment.yaml -n backend
             kubectl apply -f k8s/backend-service.yaml -n backend
+
+            # Wait until rollout is complete
+            kubectl rollout status deployment/backend-deployment -n backend
+            kubectl get pods -n backend
+            kubectl get svc -n backend
