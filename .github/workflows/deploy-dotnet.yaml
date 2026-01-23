@@ -27,6 +27,7 @@ jobs:
 
       # 4 Build & push Docker image
       - name: Build Docker image
+        working-directory: WeatherApplication
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} .
 
       - name: Push Docker image
