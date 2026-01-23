@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: noufawal0311/dotnet-backend:latest
+          image: noufawal0311/dotnet-backend:${GITHUB_SHA}
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080

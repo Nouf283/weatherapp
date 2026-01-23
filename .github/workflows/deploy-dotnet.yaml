@@ -26,14 +26,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       # 4️⃣ Build & push Docker image
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./WeatherApplication/WeatherApplication
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }}
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} .
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }}
 
       # 5️⃣ Deploy to Kubernetes via Bastion
       - name: Deploy backend to Kubernetes
