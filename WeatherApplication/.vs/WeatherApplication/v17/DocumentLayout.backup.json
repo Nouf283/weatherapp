@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Projects\\weatherapp\\WeatherApplication\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E04A22EB-7B89-4179-BA69-8B764D1FF508}|WeatherApplication\\WeatherApplication.csproj|c:\\projects\\weatherapp\\weatherapplication\\weatherapplication\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E04A22EB-7B89-4179-BA69-8B764D1FF508}|WeatherApplication\\WeatherApplication.csproj|solutionrelative:weatherapplication\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E04A22EB-7B89-4179-BA69-8B764D1FF508}|WeatherApplication\\WeatherApplication.csproj|c:\\projects\\weatherapp\\weatherapplication\\weatherapplication\\weatherapplication.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{E04A22EB-7B89-4179-BA69-8B764D1FF508}|WeatherApplication\\WeatherApplication.csproj|solutionrelative:weatherapplication\\weatherapplication.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +18,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "C:\\Projects\\weatherapp\\WeatherApplication\\WeatherApplication\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "WeatherApplication\\WeatherForecast.cs",
+              "ToolTip": "C:\\Projects\\weatherapp\\WeatherApplication\\WeatherApplication\\WeatherForecast.cs",
+              "RelativeToolTip": "WeatherApplication\\WeatherForecast.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T06:45:16.257Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "WeatherApplication",
+              "DocumentMoniker": "C:\\Projects\\weatherapp\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
+              "RelativeDocumentMoniker": "WeatherApplication\\WeatherApplication.csproj",
+              "ToolTip": "C:\\Projects\\weatherapp\\WeatherApplication\\WeatherApplication\\WeatherApplication.csproj",
+              "RelativeToolTip": "WeatherApplication\\WeatherApplication.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-23T06:42:31.417Z",
+              "EditorCaption": ""
             }
           ]
         }
