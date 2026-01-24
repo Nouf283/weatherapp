@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-ingress
+  namespace: backend
+  annotations:
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/load-balancer-name: weatherapp-alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/subnets: subnet-0bdb10be1a6ebabbb,subnet-070346a2c0baf8f4a
+    alb.ingress.kubernetes.io/tags: app=weather,env=dev
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /WeatherForecast
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80
