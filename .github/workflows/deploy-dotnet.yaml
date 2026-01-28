@@ -59,9 +59,8 @@ jobs:
                mkdir -p /home/ubuntu/weatherapp
                cd /home/ubuntu/weatherapp
                if [ ! -d "WeatherApplication/.git" ]; then
-                 git clone https://github.com/Nouf283/weatherapp.git WeatherApplication
+                 git clone https://github.com/Nouf283/weatherapp.git 
                fi
-               cd WeatherApplication
                git pull
 
              # Set namespace context
