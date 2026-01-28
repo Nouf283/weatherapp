@@ -36,11 +36,11 @@ jobs:
 
       # 5️⃣ Push Docker image
       - name: Push Docker image
-        working-directory: WeatherApplication
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }}
 
+      # 6️⃣ Deploy backend to Kubernetes via SSH
       - name: Deploy backend to Kubernetes
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -48,7 +48,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            script: |
             # Ensure kubectl is installed
             if ! command -v kubectl >/dev/null 2>&1; then
               echo "Installing kubectl..."
@@ -57,7 +56,7 @@ jobs:
             fi
 
             # Navigate to the repo root
-            cd /home/ubuntu/weatherapp/WeatherApplication
+            cd /home/ubuntu/weatherapp/WeatherApplication/WeatherApplication
 
             # Reset and pull latest code
             git reset --hard
@@ -74,9 +73,9 @@ jobs:
             kubectl set image deployment/backend-deployment \
               backend-container=${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} -n backend
 
-            # Apply manifests (corrected path)
-            kubectl apply -f WeatherApplication/k8s/backend-deployment.yaml -n backend
-            kubectl apply -f WeatherApplication/k8s/backend-service.yaml -n backend
+            # Apply manifests (relative paths)
+            kubectl apply -f k8s/backend-deployment.yaml -n backend
+            kubectl apply -f k8s/backend-service.yaml -n backend
 
             # Wait for rollout
             kubectl rollout status deployment/backend-deployment -n backend
