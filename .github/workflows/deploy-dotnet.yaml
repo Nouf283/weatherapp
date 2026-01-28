@@ -41,7 +41,6 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }}
 
-      # 6️⃣ Deploy to Kubernetes via Bastion
       - name: Deploy backend to Kubernetes
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -49,32 +48,36 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Ensure necessary tools are installed
-               if ! command -v kubectl >/dev/null 2>&1; then
-                 echo "Installing kubectl..."
-                 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-                 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-               fi
-             # Ensure repo exists
-               mkdir -p /home/ubuntu/weatherapp
-               cd /home/ubuntu/weatherapp/WeatherApplication/WeatherApplication
-               if [ ! -d "WeatherApplication/.git" ]; then
-                 git clone https://github.com/Nouf283/weatherapp.git 
-               fi
-               git pull
+            # Ensure kubectl is installed
+            if ! command -v kubectl >/dev/null 2>&1; then
+              echo "Installing kubectl..."
+              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+              sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+            fi
 
-             # Set namespace context
-             kubectl create namespace backend --dry-run=client -o yaml | kubectl apply -f -
+            # Clone or update repo
+            mkdir -p /home/ubuntu/weatherapp
+            cd /home/ubuntu/weatherapp
+            if [ ! -d "WeatherApplication/.git" ]; then
+              git clone https://github.com/Nouf283/weatherapp.git WeatherApplication
+            fi
+            cd WeatherApplication
+            git reset --hard
+            git clean -fd
+            git pull
 
-             # Update deployment image to the latest SHA tag
-             kubectl set image deployment/backend-deployment \
-               backend-container=${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} -n backend
+            # Set namespace
+            kubectl create namespace backend --dry-run=client -o yaml | kubectl apply -f -
 
-             # Apply Kubernetes manifests
-             kubectl apply -f k8s/backend-deployment.yaml -n backend
-             kubectl apply -f k8s/backend-service.yaml -n backend
+            # Update image
+            kubectl set image deployment/backend-deployment \
+              backend-container=${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} -n backend
 
-             # Wait until rollout is complete
-             kubectl rollout status deployment/backend-deployment -n backend
-             kubectl get pods -n backend
-             kubectl get svc -n backend
+            # Apply manifests
+            kubectl apply -f k8s/backend-deployment.yaml -n backend
+            kubectl apply -f k8s/backend-service.yaml -n backend
+
+            # Wait for rollout
+            kubectl rollout status deployment/backend-deployment -n backend
+            kubectl get pods -n backend
+            kubectl get svc -n backend
