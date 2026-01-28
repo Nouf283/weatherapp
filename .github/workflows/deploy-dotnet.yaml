@@ -48,6 +48,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            script: |
             # Ensure kubectl is installed
             if ! command -v kubectl >/dev/null 2>&1; then
               echo "Installing kubectl..."
@@ -55,27 +56,27 @@ jobs:
               sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
             fi
 
-            # Clone or update repo
-            mkdir -p /home/ubuntu/weatherapp
-            cd /home/ubuntu/weatherapp
-            if [ ! -d "WeatherApplication/.git" ]; then
-              git clone https://github.com/Nouf283/weatherapp.git WeatherApplication
-            fi
-            cd WeatherApplication
+            # Navigate to the repo root
+            cd /home/ubuntu/weatherapp/WeatherApplication
+
+            # Reset and pull latest code
             git reset --hard
             git clean -fd
             git pull
 
+            # Set kubeconfig so kubectl knows how to reach the cluster
+            export KUBECONFIG=/home/ubuntu/.kube/config
+
             # Set namespace
             kubectl create namespace backend --dry-run=client -o yaml | kubectl apply -f -
 
-            # Update image
+            # Update deployment image
             kubectl set image deployment/backend-deployment \
               backend-container=${{ secrets.DOCKERHUB_USERNAME }}/dotnet-backend:${{ github.sha }} -n backend
 
-            # Apply manifests
-            kubectl apply -f k8s/backend-deployment.yaml -n backend
-            kubectl apply -f k8s/backend-service.yaml -n backend
+            # Apply manifests (corrected path)
+            kubectl apply -f WeatherApplication/k8s/backend-deployment.yaml -n backend
+            kubectl apply -f WeatherApplication/k8s/backend-service.yaml -n backend
 
             # Wait for rollout
             kubectl rollout status deployment/backend-deployment -n backend
