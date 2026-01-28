@@ -49,8 +49,14 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/weatherapp/WeatherApplication
-            git pull
+            # Ensure repo exists
+              mkdir -p /home/ubuntu/weatherapp
+              cd /home/ubuntu/weatherapp
+              if [ ! -d "WeatherApplication/.git" ]; then
+                git clone https://github.com/Nouf283/weatherapp.git WeatherApplication
+              fi
+              cd WeatherApplication
+              git pull
 
             # Set namespace context
             kubectl create namespace backend --dry-run=client -o yaml | kubectl apply -f -
