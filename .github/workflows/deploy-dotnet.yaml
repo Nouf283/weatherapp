@@ -57,7 +57,7 @@ jobs:
                fi
              # Ensure repo exists
                mkdir -p /home/ubuntu/weatherapp
-               cd /home/ubuntu/weatherapp/WeatherApplication
+               cd /home/ubuntu/weatherapp/WeatherApplication/WeatherApplication
                if [ ! -d "WeatherApplication/.git" ]; then
                  git clone https://github.com/Nouf283/weatherapp.git 
                fi
